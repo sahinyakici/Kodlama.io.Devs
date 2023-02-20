@@ -10,12 +10,14 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "languages")
-public class Language {
+@Table(name = "frameworks")
+public class LanguageFramework {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private int id;
-    @Column(name="name")
+    @Column(name = "languageName")
+    private String languageName;
+    @Column(name = "frameworkName")
     private String name;
 }

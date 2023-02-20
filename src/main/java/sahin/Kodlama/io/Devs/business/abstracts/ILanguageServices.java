@@ -1,16 +1,21 @@
 package sahin.Kodlama.io.Devs.business.abstracts;
 
+import sahin.Kodlama.io.Devs.business.requests.CreateLanguageRequest;
+import sahin.Kodlama.io.Devs.business.requests.UpdateLanguageRequest;
+import sahin.Kodlama.io.Devs.business.responses.GetAllLanguageResponse;
+import sahin.Kodlama.io.Devs.business.responses.GetByIdLanguageResponse;
 import sahin.Kodlama.io.Devs.entities.Language;
 
 import java.util.List;
 
 public interface ILanguageServices {
-    public List<Language> getAll();
-    Language getLanguageWithId(int id);
+    public List<GetAllLanguageResponse> getAll();
 
-    void updateLanguage(int languageId, String newName);
+    GetByIdLanguageResponse getLanguageWithId(int id);
 
-    void addLanguage(Language language) throws Exception;
+    void updateLanguage(UpdateLanguageRequest updateLanguageRequest);
+
+    void addLanguage(CreateLanguageRequest createLanguageRequest);
 
     void deleteLanguage(int language);
 }

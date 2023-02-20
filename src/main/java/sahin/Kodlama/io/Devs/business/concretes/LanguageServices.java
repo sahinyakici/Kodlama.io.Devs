@@ -1,42 +1,54 @@
 package sahin.Kodlama.io.Devs.business.concretes;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import sahin.Kodlama.io.Devs.business.abstracts.ILanguageServices;
+import sahin.Kodlama.io.Devs.business.requests.CreateLanguageRequest;
+import sahin.Kodlama.io.Devs.business.requests.UpdateLanguageRequest;
+import sahin.Kodlama.io.Devs.business.responses.GetAllLanguageResponse;
+import sahin.Kodlama.io.Devs.business.responses.GetByIdLanguageResponse;
+import sahin.Kodlama.io.Devs.core.utilities.mappers.ModelMapperService;
 import sahin.Kodlama.io.Devs.dataAccess.abstracts.IDataAccess;
 import sahin.Kodlama.io.Devs.entities.Language;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class LanguageServices implements ILanguageServices {
     private IDataAccess dataAccess;
+    private ModelMapperService modelMapperService;
 
-    public LanguageServices(IDataAccess dataAccess) {
-        this.dataAccess = dataAccess;
+
+    @Override
+    public List<GetAllLanguageResponse> getAll() {
+        List<Language> languages = dataAccess.findAll();
+        List<GetAllLanguageResponse> languageResponses = languages.stream().map(language -> this.modelMapperService.forResponse().map(language, GetAllLanguageResponse.class)).collect(Collectors.toList());
+        return languageResponses;
     }
 
     @Override
-    public List<Language> getAll() {
-        return dataAccess.getAll();
+    public GetByIdLanguageResponse getLanguageWithId(int id) {
+        Language language= this.dataAccess.findById(id).orElseThrow();
+        GetByIdLanguageResponse response=this.modelMapperService.forResponse().map(language,GetByIdLanguageResponse.class);
+        return response;
     }
 
     @Override
-    public Language getLanguageWithId(int id) {
-        return dataAccess.getAll().get(id);
+    public void updateLanguage(UpdateLanguageRequest updateLanguageRequest) {
+        Language language = this.modelMapperService.forRequest().map(updateLanguageRequest, Language.class);
+        this.dataAccess.save(language);
     }
 
     @Override
-    public void updateLanguage(int languageId, String newName) {
-        dataAccess.updateLanguage(languageId, newName);
-    }
-
-    @Override
-    public void addLanguage(Language language) throws Exception {
-        dataAccess.addLanguage(language);
+    public void addLanguage(CreateLanguageRequest createLanguageRequest) {
+        Language language = this.modelMapperService.forRequest().map(createLanguageRequest, Language.class);
+        this.dataAccess.save(language);
     }
 
     @Override
     public void deleteLanguage(int language) {
-        dataAccess.deleteLanguage(language);
+        dataAccess.deleteById(language);
     }
 }
